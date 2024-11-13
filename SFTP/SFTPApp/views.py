@@ -42,11 +42,9 @@ def home(request):
         obj = File.objects.create(file=file)
         save_sftp(obj.file.path)
         download_from_sftp()
-        #redirect('succesful')
+        
     return render(request, "home.html", {})
 
-def succesful(request):
-    render(request, "succesful.html")
 # Create your views here.
 def save_sftp(file_path):
     

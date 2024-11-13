@@ -1,7 +1,6 @@
 from django.urls import path, include
-from .views  import home,succesful
+from .views  import home
 
 urlpatterns = [
     path("", home, name="home"),
-    path("succesful", succesful, name="succesful"),
 ]
