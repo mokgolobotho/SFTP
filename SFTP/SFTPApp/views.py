@@ -18,33 +18,37 @@ def download_from_sftp():
         print(f"Files in remote directory: {file_list}")
 
         if file_list:
-            selected_file = file_list[0] 
+            selected_file = max(file_list, key=lambda x: x.st_mtime)
 
-            remote_path = f'/{selected_file}'
-            #sftp.get(remote_path)
             print(f"File {selected_file} downloaded successfully to")
         else:
             print("No files found in the remote directory.")
+            sftp.close()
+            transport.close()
         
-        sftp.remove(remote_path)
-        print(f"File {selected_file} deleted from the remote server.")
 
     except Exception as e:
         print(f"Error downloading from SFTP: {e}")
         return None
+    
+    sftp.close()
+    transport.close()
     return selected_file
 
 
-def home(request):
+def home1(request):
     if request.method == "POST":
-        #file = request.FILES['file']
         file = download_from_sftp()
         obj = File.objects.create(file=file)
-        save_sftp(obj.file.path)
-        download_from_sftp()
         
+        save_sftp(obj.file.path)       
     return render(request, "home.html", {})
 
+def home(request):
+    if request.method == "POST":
+        file_path = "C:\\Users\\Thabang\\Desktop\\MI-Group\\SFTP\\easy2176.729"
+        save_sftp(file_path)       
+    return render(request, "home.html", {})
 # Create your views here.
 def save_sftp(file_path):
     
@@ -56,6 +60,7 @@ def save_sftp(file_path):
     try:
         with open(file_path, 'rb') as file:
             lines = file.read().decode('utf-8', errors='replace').splitlines()
+            print(lines)
             
             sof_info = ""
             terminal_id = date = time = None
