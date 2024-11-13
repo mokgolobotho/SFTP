@@ -21,10 +21,13 @@ def download_from_sftp():
             selected_file = file_list[0] 
 
             remote_path = f'/{selected_file}'
-            sftp.get(remote_path)
+            #sftp.get(remote_path)
             print(f"File {selected_file} downloaded successfully to")
         else:
             print("No files found in the remote directory.")
+        
+        sftp.remove(remote_path)
+        print(f"File {selected_file} deleted from the remote server.")
 
     except Exception as e:
         print(f"Error downloading from SFTP: {e}")
