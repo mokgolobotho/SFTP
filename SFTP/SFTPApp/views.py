@@ -2,12 +2,43 @@ from django.shortcuts import render,redirect
 from datetime import datetime
 import os
 from .models import EasyDumps,File 
+import paramiko
+
+def download_from_sftp():
+    host = "sftp.easypay.co.za"
+    port = 9021
+    username = "easy5391"
+    password = "W)$dI!6qA@3p"
+    try:
+        transport = paramiko.Transport((host, port))
+        transport.connect(username=username, password=password)
+        sftp = paramiko.SFTPClient.from_transport(transport)
+
+        file_list = sftp.listdir()
+        print(f"Files in remote directory: {file_list}")
+
+        if file_list:
+            selected_file = file_list[0] 
+
+            remote_path = f'/{selected_file}'
+            sftp.get(remote_path)
+            print(f"File {selected_file} downloaded successfully to")
+        else:
+            print("No files found in the remote directory.")
+
+    except Exception as e:
+        print(f"Error downloading from SFTP: {e}")
+        return None
+    return selected_file
+
 
 def home(request):
     if request.method == "POST":
-        file = request.FILES['file']
+        #file = request.FILES['file']
+        file = download_from_sftp()
         obj = File.objects.create(file=file)
         save_sftp(obj.file.path)
+        download_from_sftp()
         #redirect('succesful')
     return render(request, "home.html", {})
 
