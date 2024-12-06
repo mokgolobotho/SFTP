@@ -60,8 +60,6 @@ def save_sftp(file_path):
     try:
         with open(file_path, 'rb') as file:
             lines = file.read().decode('utf-8', errors='replace').splitlines()
-            print(lines)
-            print(lines[0])
             sof_info = ""
             terminal_id = date = time = None
             amount = transaction_fee = easy_ref = None
